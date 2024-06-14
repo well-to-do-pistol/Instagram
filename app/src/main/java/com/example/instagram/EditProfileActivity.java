@@ -85,7 +85,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 fullname.setText(user.getName());
                 username.setText(user.getUsername());
                 bio.setText(user.getBio());
-                Picasso.get().load(user.getImageurl()).into(imageProfile);
+                Picasso.get().load(user.getImageurl()).into(imageProfile);   //数据库一改变, edit视图的所有东西都会跟着改变
             }
 
             @Override

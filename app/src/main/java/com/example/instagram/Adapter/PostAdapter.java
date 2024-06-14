@@ -1,5 +1,7 @@
 package com.example.instagram.Adapter;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.instagram.CommentActivity;
+import com.example.instagram.FollowersActivity;
 import com.example.instagram.Fragments.PostDetailFragment;
 import com.example.instagram.Fragments.ProfileFragment;
 import com.example.instagram.Model.Post;
@@ -27,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.hendraanggrian.appcompat.socialview.widget.SocialTextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder>{
@@ -87,6 +91,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder>{
                 if(holder.like.getTag().equals("like")){
                     FirebaseDatabase.getInstance().getReference().child("Likes")
                             .child(post.getPostid()).child(firebaseUser.getUid()).setValue(true);
+
+                    addNotification(post.getPostid(), post.getPublisher()); //通知发布者有个人喜欢但是不知道是谁
                 }else {
                     FirebaseDatabase.getInstance().getReference().child("Likes")
                             .child(post.getPostid()).child(firebaseUser.getUid()).removeValue();
@@ -167,6 +173,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder>{
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new PostDetailFragment()).commit();
+            }
+        });
+
+        holder.noOfLikes.setOnClickListener(new View.OnClickListener() {   //点击文字
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, FollowersActivity.class);
+                intent.putExtra("id", post.getPostid());         //不是postId吗, 它是怎么检索东西的????
+                intent.putExtra("title", "likes");         //我改了, 可以检索到喜欢的人
+                mContext.startActivity(intent);
             }
         });
     }
@@ -275,5 +291,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Viewholder>{
 
             }
         });
+    }
+
+    private void addNotification(String postId, String publisherId){
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("userid", publisherId);
+        map.put("text", "liked your post.");
+        map.put("postid", postId);
+        map.put("isPost", true);
+
+        FirebaseDatabase.getInstance().getReference().child("Notifications").child(firebaseUser.getUid()).push().setValue(map);
     }
 }
