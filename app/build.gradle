@@ -47,9 +47,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation 'com.google.firebase:firebase-functions:20.2.2'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
 
     implementation "com.hendraanggrian.appcompat:socialview:0.1"
     implementation "com.hendraanggrian.appcompat:socialview-autocomplete:0.1"
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.squareup.picasso:picasso:2.8'
+
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
 }

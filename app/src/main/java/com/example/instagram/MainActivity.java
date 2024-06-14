@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Apply window insets for system bars
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+//        // Apply window insets for system bars
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -69,7 +69,22 @@ public class MainActivity extends AppCompatActivity {
             return true; // Return true to display the item as the selected item
         });
 
+        Bundle intent = getIntent().getExtras(); //拿到当前intent中的bundle
+        if(intent != null){
+            String profileId = intent.getString("publisherId");
+
+            getSharedPreferences("PROFILE", MODE_PRIVATE).edit().putString("profileId", profileId).apply();
+//            - 此行负责将 `profileId` 保存到共享首选项。
+//            `getSharedPreferences(name, mode)` 用于检索由 `name`（本例中为 `"PROFILE"`）标识的共享首选项文件，
+//            并在指定模式下运行（`MODE_PRIVATE` 表示数据只能由调用应用程序访问）。调用 `edit()` 为这些首选项创建编辑器，
+//            然后 `putString(key, value)` 将 `profileId` 插入共享首选项，最后使用 `apply()` 异步保存更改。
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+            bottomNavigationView.setSelectedItemId(R.id.nav_profile);
+        }else { //此行用于将容器（`R.id.fragment_container`）中的片段替换为 `ProfileFragment` 的新实例
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        }
+
         // Set the default selected item, usually done to show initial content
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 }
